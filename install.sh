@@ -859,11 +859,14 @@ function menu(){
 }
 
 # Membaut Default Menu 
-function profile(){
-clear
+#!/bin/bash
+
+function profile() {
+    clear
+
     cat >/root/.profile <<EOF
 # ~/.profile: executed by Bourne-compatible login shells.
-if [ "$BASH" ]; then
+if [ "\$BASH" ]; then
     if [ -f ~/.bashrc ]; then
         . ~/.bashrc
     fi
@@ -873,37 +876,40 @@ wex
 menu
 EOF
 
-cat >/etc/cron.d/xp_all <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		2 0 * * * root /usr/local/sbin/xp
-	END
-cat >/etc/cron.d/bckpbb <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		1 0 * * * root /usr/local/sbin/backupbot
-	END
+    cat >/etc/cron.d/xp_all <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 0 * * * root /usr/local/sbin/xp
+END
+
+    cat >/etc/cron.d/bckpbb <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+1 0 * * * root /usr/local/sbin/backupbot
+END
+
     chmod 644 /root/.profile
 
     cat >/etc/cron.d/daily_reboot <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		0 5 * * * root /sbin/reboot
-	END
-	cat >/etc/cron.d/colmek <<-END
-		SHELL=/bin/sh
-		PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-		*/10 * * * * root /usr/local/sbin/limiter
-	END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 5 * * * root /sbin/reboot
+END
+
+    cat >/etc/cron.d/colmek <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+*/10 * * * * root /usr/local/sbin/limiter
+END
 
     echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" >/etc/cron.d/log.nginx
     echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >>/etc/cron.d/log.xray
-    service cron restart
+    systemctl restart cron.service
     cat >/home/daily_reboot <<-END
-		5
-	END
+5
+END
 
-cat >/etc/systemd/system/rc-local.service <<EOF
+    cat >/etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
 ConditionPathExists=/etc/rc.local
@@ -918,12 +924,12 @@ SysVStartPriority=99
 WantedBy=multi-user.target
 EOF
 
-echo "/bin/false" >>/etc/shells
-echo "/usr/sbin/nologin" >>/etc/shells
-cat >/etc/rc.local <<EOF
+    echo "/bin/false" >>/etc/shells
+    echo "/usr/sbin/nologin" >>/etc/shells
+    cat >/etc/rc.local <<EOF
 #!/bin/sh -e
 # rc.local
-# By default this script does nothing.
+# By default, this script does nothing.
 iptables -I INPUT -p udp --dport 5300 -j ACCEPT
 iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 systemctl restart netfilter-persistent
@@ -931,7 +937,7 @@ exit 0
 EOF
 
     chmod +x /etc/rc.local
-    
+
     AUTOREB=$(cat /home/daily_reboot)
     SETT=11
     if [ $AUTOREB -gt $SETT ]; then
@@ -939,8 +945,13 @@ EOF
     else
         TIME_DATE="AM"
     fi
-print_success "Menu Packet"
+
+    echo "Menu Packet"
 }
+
+# Panggil fungsi profile
+profile
+
 
 # Restart layanan after install
 function enable_services(){
@@ -988,7 +999,12 @@ clear
 instal
 echo ""
 history -c
-
+rm -rf /root/menu
+rm -rf /root/*.zip
+rm -rf /root/*.sh
+rm -rf /root/LICENSE
+rm -rf /root/README.md
+rm -rf /root/domain
 #sudo hostnamectl set-hostname $user
 secs_to_human "$(($(date +%s) - ${start}))"
 echo ""
